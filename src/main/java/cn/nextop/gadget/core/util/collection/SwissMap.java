@@ -259,6 +259,9 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	private Entry<K, V> node(Object key) {
 		final var h = this.hash.hash(key);
 		final var hi = (h & H1_MASK) >>> 7;
@@ -277,6 +280,35 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 			
 			//
 			t = p.empty(cast(simd)); if(t != 0L) return null;
+			final int n = g.length(); if(++i >= n) { i = 0; }
+		}
+	}
+	
+	private boolean delete(Object key) {
+		final var h = this.hash.hash(key);
+		final var hi = (h & H1_MASK) >>> 7;
+		final var lo = (byte)(h & H2_MASK);
+		final var g = group; var i = g.mod(hi);
+		final var p = platform; var s = p.shift();
+		var m = g.meta; var d = m.data; while (true) {
+			//
+			var x = i << s; final var simd = p.simd(x, d);
+			var t = p.eq(cast(simd), lo); while(t != 0L) {
+				var n = zeros(t); final var y = p.next(n);
+				var j = x + y ; final var k = g.getKey(j);
+				if (!equals(key , k)) { t &= ~(1L << n); }
+				else {
+					if(p.empty(cast(simd)) != 0L) {
+						m.add(j, EMPTY) ; this.resident--;
+					} else {
+						m.add(j, TOMB_STONE); this.dead++;
+					}
+					g.set( j , null , null ); return true;
+				}
+			}
+			
+			//
+			t = p.empty(cast(simd)); if(t != 0L) return false;
 			final int n = g.length(); if(++i >= n) { i = 0; }
 		}
 	}
@@ -330,7 +362,11 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 				var n = zeros(t); final var y = p.next(n);
 				var j = x + y ; final var k = g.getKey(j);
 				if (!equals(key , k)) { t &= ~(1L << n); }
-				else { return g.getValue(j); }/* reject */
+				else {
+					var pv = g.getValue(j); /* previous */
+					if(pv == null) g.set(j , key , value);
+					return pv;
+				}
 			}
 			
 			//
@@ -484,6 +520,7 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 				if (!equals(key , k)) { t &= ~(1L << n); }
 				else {
 					V pv = g.getValue(j), nv;
+					if (pv == null) return null;
 					if ((nv = v.apply(key, pv)) != null) {
 						g.add (j , key , nv); return (nv);
 					} else {
@@ -518,7 +555,13 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 				var n = zeros(t); final var y = p.next(n);
 				var j = x + y ; final var k = g.getKey(j);
 				if (!equals(key , k)) { t &= ~(1L << n); }
-				else { var r = g.getValue (j); return r; }
+				else {
+					var pv = g.getValue(j);
+					if (pv != null) return pv;
+					final var nv = v.apply(key);
+					if (nv != null) { g.add(j, key, nv); }
+					return nv;
+				}
 			}
 			
 			//
@@ -871,7 +914,7 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 		public <T> T[] toArray(T[] o) { return group.toKeyArray(o); }
 		
 		@Override
-		public boolean remove(Object k) { return SwissMap.this.remove(k) != null; }
+		public boolean remove(Object k) { return SwissMap.this.delete(k); }
 		
 		@Override
 		public boolean contains (Object k) { return SwissMap.this.containsKey(k); }
@@ -1028,6 +1071,7 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 		@Override
 		public long eq(ByteVector v, byte w) { return v.eq(w).toLong(); }
 	}
+	
 	
 	public static class Platform512 implements Platform<ByteVector> {
 		

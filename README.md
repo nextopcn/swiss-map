@@ -1,4 +1,4 @@
-## A Swiss map implementation written in Java.
+## A Google Swiss table implementation written in Java.
 
 ### Requirement
 

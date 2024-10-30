@@ -663,6 +663,7 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 			//
 			t = p.empty(cast(simd)); if(t != 0) {/* add */
 				
+				if (value == null) return null;
 				if (this.resize()) {/* @see this.resize */
 					return this.add( key, value, hi, lo );
 				}

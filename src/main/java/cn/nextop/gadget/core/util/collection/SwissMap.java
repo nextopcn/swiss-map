@@ -4,6 +4,7 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.reflect.Array.newInstance;
 import static java.util.Arrays.fill;
+import static java.util.Objects.requireNonNull;
 import static jdk.incubator.vector.ByteVector.SPECIES_128;
 import static jdk.incubator.vector.ByteVector.SPECIES_256;
 import static jdk.incubator.vector.ByteVector.SPECIES_512;
@@ -631,6 +632,7 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 	@Override
 	public V merge(K key, V value,
 		BiFunction<? super V , ? super V , ? extends V> v ) {
+		requireNonNull(v); requireNonNull(value);
 		final var h = this.hash.hash(key);
 		final var hi = (h & H1_MASK) >>> 7;
 		final var lo = (byte)(h & H2_MASK);
@@ -663,7 +665,6 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 			//
 			t = p.empty(cast(simd)); if(t != 0) {/* add */
 				
-				if (value == null) return null;
 				if (this.resize()) {/* @see this.resize */
 					return this.add( key, value, hi, lo );
 				}
@@ -878,7 +879,7 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 	}
 	
 	@SuppressWarnings("serial")
-	private class XEntry extends SimpleEntry< K, V > {
+	private class XEntry extends AbstractMap.SimpleEntry< K, V > {
 		
 		private final int index;
 		
@@ -957,7 +958,7 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 		public boolean isEmpty() { return SwissMap.this.isEmpty(); }
 		
 		@Override
-		public Iterator<Entry<K, V>> iterator() { return new XEntryIterator(); }
+		public Iterator<Map.Entry<K, V>> iterator() { return new XEntryIterator(); }
 		
 		@Override public boolean remove(Object o) {
 			if (!(o instanceof Map.Entry)) { return false; } var e = (Entry<K, V>)o;

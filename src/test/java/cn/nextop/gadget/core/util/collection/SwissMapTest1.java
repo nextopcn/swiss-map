@@ -435,8 +435,8 @@ public class SwissMapTest1 {
 	public void test5() {
 		//
 		SwissMap<Integer, Object> m1;
-		m1 = new SwissMap<>(); m1.setExpasion(1f);
-		m1.setHash(k -> ((Integer) k).intValue());
+		m1 = new SwissMap<>(); m1.setExpansion(1f);
+		m1.setHash (k -> ((Integer) k).intValue());
 		Assertions.assertEquals("{}", m1.toString());
 		
 		m1.put(1, "1");

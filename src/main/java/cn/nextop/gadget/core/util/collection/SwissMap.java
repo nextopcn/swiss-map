@@ -44,7 +44,7 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 	
 	//
 	private Group group;
-	private float expasion;
+	private float expansion;
 	private Platform<?> platform;
 	private int dead, limit, resident;
 	
@@ -66,14 +66,14 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 	public SwissMap( /* @see Platform */
 		int n, float x, Platform<?> p) {
 		final int a = p.maxAvgGroupLoad();
-		this.expasion = x; this.platform = p;
 		int s = p.shift(), m = p.maxGroups();
+		this.expansion = x; this.platform = p;
 		int z = max(min(m, (n + a - 1) / a), 1);
 		limit = z * a; group = new Group(z , s);
 	}
 	
 	public SwissMap(final SwissMap<K, V> m) {
-		this (m.size(), m.expasion, m.platform);
+		this(m.size(), m.expansion, m.platform);
 		m.forEach(( k , v ) -> this.add(k , v));
 	}
 	
@@ -108,8 +108,8 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 		var r = new XEntrySet(); return r;
 	}
 	
-	public void setExpasion(final float v) {
-		this.expasion = v;/* @see resize() */
+	public void setExpansion(final float v) {
+		this.expansion = v;/* see resize() */
 	}
 	
 	@Override
@@ -147,9 +147,9 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 		if(this.resident < this.limit) return false;
 		
 		//
-		var g = this.group ; var p = this.platform ;
+		int x ; var g = group; var p = platform;
+		int y = g.length(); var z = y * expansion;
 		int s = p.shift() , a = p.maxAvgGroupLoad();
-		int x, y = g.length(); var z = y * expasion;
 		x = min(p.maxGroups(), y + max(1, (int) z));
 		if(this.dead >= (this.resident >> 1)) x = y;
 		

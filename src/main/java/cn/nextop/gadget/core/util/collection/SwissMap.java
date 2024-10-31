@@ -187,23 +187,22 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 	/**
 	 * 
 	 */
-	private V add(final K k, final V v) {
+	private void add(K k, V v) {
 		final var h = this.hash.hash (k);
 		final var hi = (h & H1_MASK) >>> 7;
-		final var lo = (byte)(h & H2_MASK);
-		V r = this.add(k, v, hi, lo); return r;
+		this.add(k, v, hi, (byte) (h & H2_MASK));
 	}
 	
-	private V add (K k, V v, int hi, byte lo) {
-		final var g = group; var i = g.mod(hi);
-		final var p = platform; var s = p.shift();
-		var m = g.meta; var d = m.data; while (true) {
+	private void add(K k, V v, int hi, byte lo) {
+		final var g = this.group; var i = g.mod(hi);
+		final var p = this.platform; var s = p.shift();
+		var m = g.meta ; var d = m.data ; while(true) {
 			//
-			var x = (i << s); var simd = p.simd(x, d);
-			var t = p.empty(cast(simd)); if(t != 0L) {
+			var x = (i << s); var simd = p.simd(x , d);
+			var t = p.empty(cast(simd)); if (t != 0L) {
 				final var n = zeros(t); var y = p.next(n);
 				final var j = x + y; m.add(j, lo); /* + */
-				g.add(j, k, v); this.resident++; return v;
+				g.add(j , k , v); this.resident++; return;
 			}
 			
 			//
@@ -571,7 +570,7 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 				V nv = v.apply(key);
 				if (nv == null) return null;
 				if (this.resize()) {/* @see this.resize */
-					V r = add (key, nv, hi, lo); return r;
+					this.add (key, nv, hi, lo); return nv;
 				}
 				
 				final var n = zeros(t); var y = p.next(n);
@@ -618,7 +617,7 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 				V nv = v.apply(key, null);
 				if (nv == null) return null;
 				if (this.resize()) {/* @see this.resize */
-					V r = add (key, nv, hi, lo); return r;
+					this.add (key, nv, hi, lo); return nv;
 				}
 				
 				final var n = zeros(t); var y = p.next(n);
@@ -666,7 +665,7 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 			t = p.empty(cast(simd)); if(t != 0) {/* add */
 				
 				if (this.resize()) {/* @see this.resize */
-					return this.add( key, value, hi, lo );
+					add(key, value, hi, lo); return value;
 				}
 				
 				final var n = zeros(t); var y = p.next(n);
@@ -1073,7 +1072,6 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 		@Override
 		public long eq(ByteVector v, byte w) { return v.eq(w).toLong(); }
 	}
-	
 	
 	public static class Platform512 implements Platform<ByteVector> {
 		

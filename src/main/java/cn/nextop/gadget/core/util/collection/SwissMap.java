@@ -811,8 +811,9 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 	 */
 	abstract class AbstractIterator<T> implements Iterator<T> {
 		
-		protected int index;
 		protected static Object EMPTY = new Object();
+		
+		int index; Group group = SwissMap.this.group;
 		
 		@Override public boolean hasNext() {
 			var r = false; final var d = group.meta.data;
@@ -825,7 +826,7 @@ public class SwissMap<K, V> extends AbstractMap<K, V> {
 	
 	private class XKeyIterator extends AbstractIterator< K > {
 		
-		protected Object key = EMPTY;
+		private Object key = EMPTY;
 		
 		@Override public void remove() {
 			final boolean illegal = this.key == EMPTY;

@@ -24,7 +24,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import jdk.incubator.vector.ByteVector;
-import sun.misc.Unsafe;
+import jdk.internal.misc.Unsafe;
 
 /**
  * @author Baoyi Chen

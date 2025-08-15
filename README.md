@@ -11,7 +11,7 @@ Java 21
 required VM option
 
 ```
---add-opens=jdk.unsupported/sun.misc=ALL-UNNAMED
+--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED
 ```
 
 

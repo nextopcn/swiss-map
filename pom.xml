@@ -21,6 +21,18 @@
             <version>5.11.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>1.37</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <groupId>org.openjdk.jmh</groupId>
+            <version>1.37</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     
     <build>
@@ -35,7 +47,7 @@
                     <compilerArgs>
                         <arg>-parameters</arg>
                         <arg>--add-modules=jdk.incubator.vector</arg>
-                        <arg>--add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED</arg>
+                        <arg>--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -48,7 +60,7 @@
                         <include>**/**.java</include>
                     </includes>
                     <argLine>
-                        --add-opens=jdk.unsupported/sun.misc=ALL-UNNAMED
+                        --add-opens=java.base/jdk.internal.misc=ALL-UNNAMED
                     </argLine>
                 </configuration>
             </plugin>

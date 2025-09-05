@@ -34,7 +34,7 @@ The following vm options can be added to improve the performance of the Swiss ma
 
 ### Benchmark
 
-```shell
+```textmate
 Benchmark                                    Mode  Cnt        Score       Error  Units
 
 SwissMapBenchmark.benchHashMapForeach       thrpt    5   538268.449 ± 11514.793  ops/s

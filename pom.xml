@@ -6,13 +6,62 @@
     
     <groupId>cn.nextop</groupId>
     <artifactId>swiss-map</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    
+    <name>swiss-map</name>
+    <description>
+        A Google Swiss table implementation written in Java.
+    </description>
+    <url>https://github.com/nextopcn/swiss-map</url>
+    
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    
+    <developers>
+        <developer>
+            <name>Baoyi Chen</name>
+            <url>https://github.com/leonchen83</url>
+            <organization>nextop.asia</organization>
+            <email>baoyi@nextop.asia</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+        
+        <developer>
+            <name>Jingqi Xu</name>
+            <url>https://github.com/whitesock</url>
+            <organization>nextop.asia</organization>
+            <email>xujq@nextop.cn</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+        
+    </developers>
+    
+    <scm>
+        <connection>scm:git:git@github.com:nextopcn/swiss-map.git</connection>
+        <url>scm:git:git@github.com:nextopcn/swiss-map.git</url>
+        <developerConnection>scm:git:git@github.com:nextopcn/swiss-map.git</developerConnection>
+    </scm>
+    
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/nextopcn/swiss-map/issues</url>
+    </issueManagement>
     
     <dependencies>
         <dependency>
@@ -62,6 +111,67 @@
                     <argLine>
                         --add-opens=java.base/jdk.internal.misc=ALL-UNNAMED
                     </argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.12.0</version>
+                <configuration>
+                    <doclint>none</doclint>
+                    <source>${maven.compiler.source}</source>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.4.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.2.8</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <gpgArguments>
+                        <arg>--pinentry-mode</arg>
+                        <arg>loopback</arg>
+                    </gpgArguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.9.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                    <waitUntil>validated</waitUntil>
                 </configuration>
             </plugin>
         </plugins>

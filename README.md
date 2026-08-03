@@ -18,6 +18,16 @@ required VM option
 
 ### Usage
 
+```xml
+
+<dependency>
+    <groupId>cn.nextop</groupId>
+    <artifactId>swiss-map</artifactId>
+    <version>1.0.0</version>
+</dependency>
+
+```
+
 ```java
 SwissMap<Integer, Integer> map = new SwissMap<>(16);
 map.put(1, 1);

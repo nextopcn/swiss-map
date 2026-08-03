@@ -121,6 +121,12 @@
                     <doclint>none</doclint>
                     <source>${maven.compiler.source}</source>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <additionalOptions>
+                        <option>--add-modules</option>
+                        <option>jdk.incubator.vector</option>
+                        <option>--add-exports</option>
+                        <option>java.base/jdk.internal.misc=ALL-UNNAMED</option>
+                    </additionalOptions>
                 </configuration>
                 <executions>
                     <execution>
@@ -143,25 +149,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.2.8</version>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <gpgArguments>
-                        <arg>--pinentry-mode</arg>
-                        <arg>loopback</arg>
-                    </gpgArguments>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.central</groupId>
